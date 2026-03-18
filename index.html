@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifiable Data Playground</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --indigo-50: #eef2ff;
+      --indigo-100: #e0e7ff;
+      --indigo-200: #c7d2fe;
+      --indigo-400: #818cf8;
+      --indigo-500: #6366f1;
+      --indigo-600: #4f46e5;
+      --indigo-700: #4338ca;
+      --indigo-800: #3730a3;
+      --purple-500: #a855f7;
+      --purple-600: #9333ea;
+      --purple-700: #7e22ce;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-900: #111827;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: white;
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Grid Pattern */
+    .bg-grid-pattern {
+      background-image: 
+        linear-gradient(to right, rgba(79, 70, 229, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(79, 70, 229, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(to bottom, var(--indigo-50), white, white);
+      padding: 8rem 0 5rem;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.05;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: var(--indigo-500);
+      opacity: 0.1;
+      border-radius: 50%;
+      filter: blur(100px);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 56rem;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--indigo-100);
+      color: var(--indigo-700);
+      border-radius: 9999px;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    h1 {
+      font-size: 3.75rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-size: 1.5rem;
+      color: var(--gray-600);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .supporting-text {
+      font-size: 1.125rem;
+      color: var(--gray-500);
+      margin-bottom: 2.5rem;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--indigo-600);
+      color: white;
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--indigo-700);
+      box-shadow: 0 20px 35px -5px rgba(79, 70, 229, 0.4);
+      transform: scale(1.05);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--gray-700);
+      border: 2px solid var(--gray-200);
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray-50);
+      border-color: var(--gray-400);
+    }
+
+    /* Features Section */
+    .features {
+      padding: 6rem 0;
+      background: white;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 1rem;
+    }
+
+    .section-description {
+      font-size: 1.25rem;
+      color: var(--gray-600);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 75rem;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      padding: 2rem;
+      background: white;
+      border-radius: 1rem;
+      border: 2px solid var(--gray-100);
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--indigo-200);
+      box-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.1);
+    }
+
+    .feature-icon {
+      width: 3rem;
+      height: 3rem;
+      background: var(--indigo-100);
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover .feature-icon {
+      background: var(--indigo-600);
+      transform: scale(1.1);
+    }
+
+    .feature-icon svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--indigo-600);
+      transition: color 0.3s;
+    }
+
+    .feature-card:hover .feature-icon svg {
+      color: white;
+    }
+
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-description {
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    /* Roadmap Section */
+    .roadmap {
+      padding: 6rem 0;
+      background: linear-gradient(to bottom, var(--gray-50), white);
+    }
+
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 75rem;
+      margin: 0 auto;
+    }
+
+    .roadmap-card {
+      position: relative;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 0.75rem;
+      border: 1px solid var(--gray-200);
+      transition: all 0.3s;
+    }
+
+    .roadmap-card:hover {
+      border-color: var(--indigo-400);
+    }
+
+    .roadmap-status {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.75rem;
+      background: var(--indigo-100);
+      color: var(--indigo-700);
+      font-size: 0.75rem;
+      font-weight: 500;
+      border-radius: 9999px;
+    }
+
+    .roadmap-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: linear-gradient(135deg, var(--indigo-100), #ddd6fe);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .roadmap-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--indigo-600);
+    }
+
+    .roadmap-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      padding-right: 5rem;
+      line-height: 1.4;
+    }
+
+    /* Use Cases Section */
+    .use-cases {
+      padding: 6rem 0;
+      background: white;
+    }
+
+    .use-case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      max-width: 75rem;
+      margin: 0 auto;
+    }
+
+    .use-case-card {
+      text-align: center;
+      padding: 1.5rem;
+      background: linear-gradient(to bottom, var(--gray-50), white);
+      border-radius: 0.75rem;
+      border: 1px solid var(--gray-200);
+      transition: all 0.3s;
+    }
+
+    .use-case-card:hover {
+      border-color: var(--indigo-400);
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.1);
+    }
+
+    .use-case-icon {
+      width: 4rem;
+      height: 4rem;
+      background: linear-gradient(135deg, var(--indigo-500), var(--purple-600));
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
+    }
+
+    .use-case-icon svg {
+      width: 2rem;
+      height: 2rem;
+      color: white;
+    }
+
+    .use-case-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .use-case-description {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    /* CTA Section */
+    .cta {
+      position: relative;
+      padding: 6rem 0;
+      background: linear-gradient(135deg, var(--indigo-600), var(--indigo-700), var(--purple-700));
+      overflow: hidden;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.1;
+    }
+
+    .cta-glow-1 {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 24rem;
+      height: 24rem;
+      background: var(--purple-500);
+      opacity: 0.3;
+      border-radius: 50%;
+      filter: blur(100px);
+    }
+
+    .cta-glow-2 {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 24rem;
+      height: 24rem;
+      background: var(--indigo-500);
+      opacity: 0.3;
+      border-radius: 50%;
+      filter: blur(100px);
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 10;
+      max-width: 48rem;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .cta-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-description {
+      font-size: 1.25rem;
+      color: #e0e7ff;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-white {
+      background: white;
+      color: var(--indigo-600);
+    }
+
+    .btn-white:hover {
+      background: var(--gray-50);
+      box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+    }
+
+    .btn-ghost {
+      background: rgba(79, 70, 229, 0.5);
+      color: white;
+      border: 2px solid rgba(165, 180, 252, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(79, 70, 229, 0.7);
+      border-color: rgba(165, 180, 252, 0.5);
+    }
+
+    /* Footer */
+    .footer {
+      padding: 3rem 0;
+      background: var(--gray-50);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .footer-content {
+      max-width: 75rem;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-logo {
+      width: 2rem;
+      height: 2rem;
+      background: var(--indigo-600);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer-logo svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: white;
+    }
+
+    .footer-brand-text {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gray-600);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .footer-link:hover {
+      color: var(--indigo-600);
+    }
+
+    .footer-link.disabled {
+      color: var(--gray-400);
+      cursor: not-allowed;
+    }
+
+    .footer-link svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .coming-soon-badge {
+      padding: 0.125rem 0.5rem;
+      background: var(--gray-200);
+      color: var(--gray-500);
+      font-size: 0.75rem;
+      border-radius: 0.25rem;
+    }
+
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid var(--gray-200);
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      .subtitle {
+        font-size: 1.25rem;
+      }
+
+      .section-title {
+        font-size: 1.875rem;
+      }
+
+      .cta-title {
+        font-size: 2rem;
+      }
+
+      .hero {
+        padding: 5rem 0 3rem;
+      }
+
+      .features,
+      .roadmap,
+      .use-cases,
+      .cta {
+        padding: 4rem 0;
+      }
+
+      .feature-grid,
+      .roadmap-grid,
+      .use-case-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-top {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* Icon animation */
+    .btn:hover svg {
+      transform: translateX(4px);
+      transition: transform 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="bg-grid-pattern" style="position: absolute; inset: 0;"></div>
+    <div class="hero-glow"></div>
+    
+    <div class="container">
+      <div class="hero-content">
+        <div class="badge">
+          <i data-lucide="sparkles" style="width: 1rem; height: 1rem;"></i>
+          <span>Coming Soon</span>
+        </div>
+        
+        <h1>Verifiable Data Playground</h1>
+        
+        <p class="subtitle">
+          Test, verify, and explore verifiable credentials and privacy-preserving technologies
+        </p>
+        
+        <p class="supporting-text">
+          A developer-focused platform for VC, VP, BBS, and SD-JWT validation — coming soon
+        </p>
+        
+        <div class="button-group">
+          <button class="btn btn-primary">
+            Explore Features
+            <i data-lucide="arrow-right" style="width: 1.25rem; height: 1.25rem;"></i>
+          </button>
+          <button class="btn btn-secondary">
+            View Documentation
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Powerful Developer Tools</h2>
+        <p class="section-description">Everything you need to work with verifiable data</p>
+      </div>
+      
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="shield" style="width: 1.5rem; height: 1.5rem;"></i>
+          </div>
+          <h3 class="feature-title">VC Verification</h3>
+          <p class="feature-description">Verify W3C Verifiable Credentials with ease</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="check-circle" style="width: 1.5rem; height: 1.5rem;"></i>
+          </div>
+          <h3 class="feature-title">VP Validation</h3>
+          <p class="feature-description">Validate presentations and holder binding</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="eye" style="width: 1.5rem; height: 1.5rem;"></i>
+          </div>
+          <h3 class="feature-title">BBS Selective Disclosure</h3>
+          <p class="feature-description">Support privacy-preserving BBS signatures</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="key" style="width: 1.5rem; height: 1.5rem;"></i>
+          </div>
+          <h3 class="feature-title">SD-JWT Testing</h3>
+          <p class="feature-description">Decode and verify SD-JWT tokens</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="fingerprint" style="width: 1.5rem; height: 1.5rem;"></i>
+          </div>
+          <h3 class="feature-title">DID Resolution</h3>
+          <p class="feature-description">Resolve and inspect decentralized identifiers</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="code" style="width: 1.5rem; height: 1.5rem;"></i>
+          </div>
+          <h3 class="feature-title">JSON Playground</h3>
+          <p class="feature-description">Interactive testing environment (coming soon)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roadmap Section -->
+  <section class="roadmap">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">What's Coming</h2>
+        <p class="section-description">Building the future of verifiable data</p>
+      </div>
+      
+      <div class="roadmap-grid">
+        <div class="roadmap-card">
+          <span class="roadmap-status">In Development</span>
+          <div class="roadmap-icon">
+            <i data-lucide="cpu"></i>
+          </div>
+          <h3 class="roadmap-title">Advanced cryptographic validation engine</h3>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status">Planned</span>
+          <div class="roadmap-icon">
+            <i data-lucide="file-stack"></i>
+          </div>
+          <h3 class="roadmap-title">Multi-format credential support</h3>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status">Planned</span>
+          <div class="roadmap-icon">
+            <i data-lucide="zap"></i>
+          </div>
+          <h3 class="roadmap-title">Developer API access</h3>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status">Q2 2026</span>
+          <div class="roadmap-icon">
+            <i data-lucide="package"></i>
+          </div>
+          <h3 class="roadmap-title">SDK & CLI tools</h3>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status">Q2 2026</span>
+          <div class="roadmap-icon">
+            <i data-lucide="activity"></i>
+          </div>
+          <h3 class="roadmap-title">Real-time verification feedback</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases Section -->
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Built for Developers</h2>
+        <p class="section-description">Trusted by teams building the next generation of secure systems</p>
+      </div>
+      
+      <div class="use-case-grid">
+        <div class="use-case-card">
+          <div class="use-case-icon">
+            <i data-lucide="users"></i>
+          </div>
+          <h3 class="use-case-title">Identity Systems</h3>
+          <p class="use-case-description">Build secure digital identity solutions</p>
+        </div>
+
+        <div class="use-case-card">
+          <div class="use-case-icon">
+            <i data-lucide="blocks"></i>
+          </div>
+          <h3 class="use-case-title">Web3 / DID Developers</h3>
+          <p class="use-case-description">Decentralized identity infrastructure</p>
+        </div>
+
+        <div class="use-case-card">
+          <div class="use-case-icon">
+            <i data-lucide="shield-check"></i>
+          </div>
+          <h3 class="use-case-title">Security Engineers</h3>
+          <p class="use-case-description">Validate and audit credentials</p>
+        </div>
+
+        <div class="use-case-card">
+          <div class="use-case-icon">
+            <i data-lucide="server"></i>
+          </div>
+          <h3 class="use-case-title">Backend/API Developers</h3>
+          <p class="use-case-description">Integrate verification into your stack</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="bg-grid-pattern" style="position: absolute; inset: 0;"></div>
+    <div class="cta-glow-1"></div>
+    <div class="cta-glow-2"></div>
+    
+    <div class="container">
+      <div class="cta-content">
+        <h2 class="cta-title">Start Building with Trust</h2>
+        <p class="cta-description">
+          Be the first to experience the next generation of verifiable data tools
+        </p>
+        
+        <div class="button-group">
+          <button class="btn btn-white">
+            <i data-lucide="mail" style="width: 1.25rem; height: 1.25rem;"></i>
+            Get Early Access
+          </button>
+          <button class="btn btn-ghost">
+            <i data-lucide="bell" style="width: 1.25rem; height: 1.25rem;"></i>
+            Join Waitlist
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <div class="footer-logo">
+              <i data-lucide="zap"></i>
+            </div>
+            <span class="footer-brand-text">Verifiable Data Playground</span>
+          </div>
+          
+          <div class="footer-links">
+            <a href="#" class="footer-link">
+              <i data-lucide="book-open"></i>
+              Docs
+            </a>
+            <a href="#" class="footer-link">
+              <i data-lucide="github"></i>
+              GitHub
+            </a>
+            <span class="footer-link disabled">
+              API
+              <span class="coming-soon-badge">Coming Soon</span>
+            </span>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <p class="footer-text">Experimental platform for verifiable data technologies</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Initialize Lucide Icons -->
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
